@@ -332,6 +332,18 @@ func (c *Consumer) makeAuthorizedRequest(method string, url string, dataLocation
 	}
 	authParams := allParams.Clone()
 
+	/*
+	This is probably where I should start reorganizing the code, so that user-
+	supplied params are not double-escaped (the "net/http" package already
+	escapes the values before they get to this point.
+
+	What has been happening is that URL-encoded params that have an escapable
+	character in them (like a forward-slash) are already escaped by the time they
+	get here, and then the percent symbol "%" is re-escaped.
+
+	No bueno.
+	*/
+
 	// Sort parameters alphabetically (primarily for testability / repeatability)
 	paramPairs := make(pairs, len(userParams))
 	i := 0
